@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/CSS/bootstrap.css">
+    <link rel="stylesheet" href="/CSS/estilo.css">
+</head>
+<body>
+
+    <main>
+        <div class="container"> 
+            <header>
+                <h1 class="text-center"> Gastos Semanales </h1>
+            </header>
+            <section class="principal">
+                <div class="row"> 
+                    <div class="col"> 
+                        <div class="contenido_gastos">
+                            <h2 class="text-center"> Añade tus gastos aquí: </h2>
+                            <fieldset>
+                            <form id="agregar-gasto" action="">
+                                
+                                <div class="form-group text-form"> 
+                                    <label class="h4"> Gasto: </label>
+                                    <input class="form-control" type="text" id="gasto" placeholder="Ejemplo: Transporte...">
+                                </div>
+
+                                <div class="form-group text-form"> 
+                                    <label class="h4"> Cantidad: </label>
+                                    <input class="form-control" type="number" id="cantidad" placeholder="Cantidad en $">
+                                </div>
+
+                                <button type="submit" class="btn btn-success"> Agregar </button>
+
+                            </form>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="contenido_lista">
+                            <h2 class="text-center"> Listado de Gastos </h2>
+                            <div id="gastos">
+                                <ul class="list-group"></ul>
+                            </div>
+                            <div id="presupuesto" class="presupuesto"> 
+                                <div class="alert alert-dark">
+                                    <p>Presupuesto: <span id="total"></span> </p>
+                                </div>
+                                <div class="restante alert alert-success">
+                                    <p>Restante: $ <span id="restante"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <script src="/JS/funcional_gasto.js"></script>
+</body>
+</html>
