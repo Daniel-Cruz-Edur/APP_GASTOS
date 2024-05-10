@@ -24,9 +24,15 @@ class Presupuesto
         this.gastos = [];
     }
 
-    nuevogasto(gasto)
+    nuevo_Gasto(gasto)
     {
         this.gastos = [...this.gastos, gasto];
+        this.calcular_restante();
+    }
+
+    eliminarGasto(id)
+    {
+        this.gastos= this.gastos.filter(gasto => gasto.id.toString() !== id);
         this.calcular_restante();
     }
 
@@ -36,11 +42,6 @@ class Presupuesto
         this.restante = this.presupuesto - gastado;
     }
 
-    eliminarGasto(id)
-    {
-        this.gastos= this.gastos - gastado.filter(gasto => gasto.id.toString() !== 1);
-        this.calcular_restante();
-    }
 }
 
 class UI 
@@ -53,7 +54,7 @@ class UI
 
     imprimirAlerta(mensaje, tipo)
     {
-        div_Mensaje = document.createElement(`div`);
+        const div_Mensaje = document.createElement('div');
         div_Mensaje.classList.add('text-center', 'alert');
 
         /* Si es de tipo error que agregé una clase */
@@ -64,18 +65,18 @@ class UI
         }
         else
         {
-            div_Mensaje.classList.add('alert-succes');
+            div_Mensaje.classList.add('alert-success');
         }
 
         div_Mensaje.textContent = mensaje;
 
         /* Insertar el en DOM */
 
-        document.querySelector('.contenido_gastos').insertBefore(div_Mensaje, formulario);
+        document.querySelector('contenido_gastos').insertBefore(div_Mensaje, formulario);
 
         /* Eliminar la alerta déspues de 5 segundos. */
         setTimeout(() => {
-            document.querySelector('#gastos .alert').remove();
+            document.querySelector('gastos alert').remove();
         }, 5000);
 
     }
@@ -151,7 +152,7 @@ function agregarGasto()
     }
     else
     {
-        const gasto = {nombre, cantidad, id:Date.now()}
+        const gasto = {nombre, cantidad, id:Date.now()};
 
         /* Agregar el nuevo gasto. */
 
