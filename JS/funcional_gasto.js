@@ -5,9 +5,9 @@ const listadogastos = document.querySelector('#gastos ul');
 
 /* Agregar, preguntar y eliminar. */ /* Estas van a ser la acciones que va a ejecutar el programa. */
 
-EventListener();
+eventListeners();
 
-function EventListener()
+function eventListeners()
 {
     document.addEventListener('DOMContentLoaded', Preguntar_presupuesto);
     formulario.addEventListener('submit', agregarGasto)
@@ -59,7 +59,7 @@ class UI
 
         /* Si es de tipo error que agregé una clase */
 
-        if (tipo == 'ERROR')
+        if (tipo == 'error')
         {
             div_Mensaje.classList.add('alert-danger');
         }
@@ -72,21 +72,21 @@ class UI
 
         /* Insertar el en DOM */
 
-        document.querySelector('contenido_gastos').insertBefore(div_Mensaje, formulario);
+        document.querySelector('.contenido.gastos').insertBefore(div_Mensaje, formulario);
 
         /* Eliminar la alerta déspues de 5 segundos. */
-        setTimeout(() => {
-            document.querySelector('gastos alert').remove();
-        }, 5000);
+        setTimeout( () => {
+            document.querySelector('.gastos .alert').remove();
+        }, 3000);
 
     }
 
-    agregarGastoAlListado(gasto)
+    agregarGastoAlListado(gastos)
     {
         this.limpiarHTML();
 
         /* Aca iteramos los gastos que se van a agregar. */
-        gasto.forEach(gasto => {
+        gastos.forEach(gasto => {
 
             const {nombre, cantidad, id} = gasto;
 
@@ -133,9 +133,10 @@ function Preguntar_presupuesto()
     ui.insertarPresupuesto(presupuesto);
 }
 
-function agregarGasto()
+function agregarGasto(e)
 {
     /* Leer el formulario */
+    e.preventDefault();
 
     const nombre = document.querySelector('#gasto').value;
     const cantidad = Number(document.querySelector('#cantidad').value);
@@ -144,11 +145,11 @@ function agregarGasto()
 
     if (nombre === '' || cantidad === '')
     {
-        ui.imprimirAlerta('Ambos campos son obligatorios. ', 'ERROR');
+        ui.imprimirAlerta('Ambos campos son obligatorios. ', 'error');
     }
     else if (cantidad <= 0 || isNaN(cantidad))
     {
-        ui.imprimirAlerta('Cantidad no valida', 'ERROR');
+        ui.imprimirAlerta('Cantidad no valida', 'error');
     }
     else
     {
@@ -160,11 +161,79 @@ function agregarGasto()
 
         ui.imprimirAlerta('Gasto valido', 'Correcto')
 
+        const {gastos} = presupuesto;
+        ui.agregarGastoAlListado(gastos);
+
+        ui.comprobarpresupuesto(presupuesto);
+        
+        const {restante} = presupuesto;
+
+        ui.actualizarpresupuesto(restante);
+
+        formulario.reset();
+
     }
 
+    //Comprobar presupuesto restante.
+    actualizarpresupuesto(actualizar)
+    {
+        document.querySelector('span#restante').textContent = restante;
+    }
+    comprobarpresupuesto(presupuestoobj)
+    {
+        const {presupuesto, restante} = presupuestoobj;
+        const restantediv = document.querySelector('.restante');
+
+        console.log(restante);
+        console.log(presupuesto);
+
+        if ( (presupuesto/4) > restante)
+        {
+            restantediv.classList.remove('alert-success', 'alert-warning');
+            restantediv.classList.add('alert-danger');
+        }
+        else if ( (presupuesto/2) > restante )
+        {
+            restantediv.classList.remove('alert-success');
+            restantediv.classList.add('alert-warning');
+        }
+        else
+        {
+            restantediv.classList.remove('alert-danger', 'alert-warning');
+            restantediv.classList.add('alert-success');
+        }
+
+        if (restante <= 0)
+        {
+            ui.imprimirAlerta('El presupuesto se ha agotado.', 'ERROR');
+            formulario.querySelector('button[type="submit"]').disabled = True;
+        }
+
+        limpiarHTML()
+        {
+            while (listadogastos.firstChild)
+            {
+                listadogastos.removeChild(listadogastos.firstChild);
+            }
+        }
+    }
+        
 }
 
-function eliminarGasto()
-{
 
+
+function eliminarGasto(e)
+{
+    if (e.target.classList.contains('borrar-gasto'))
+    {
+        presupuesto.eliminarGasto(id);
+
+        ui.comprobarpresupuesto(presupuesto);
+        const {restante} = presupuesto;
+        ui.actualizarpresupuesto(restante);
+
+
+        e.target.parentElement.remove();
+
+    }
 }
