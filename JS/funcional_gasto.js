@@ -94,6 +94,7 @@ class UI
         /* Aca iteramos los gastos que se van a agregar. */
         gastos.forEach(gasto => {
 
+
             const {nombre, cantidad, id} = gasto;
 
 
@@ -124,9 +125,9 @@ class UI
         document.querySelector('span#restante').textContent = restante;
     }
 
-    comprobarpresupuesto(presupuesto)
+    comprobarpresupuesto(presupuestoobj)
     {
-        const { restante } = presupuesto;
+        const { presupuesto, restante } = presupuestoobj;
         const restantediv = document.querySelector('.restante');
 
         console.log(restante);
@@ -150,29 +151,30 @@ class UI
 
         if (restante <= 0)
         {
-            ui.imprimirAlerta('El presupuesto se ha agotado.', 'ERROR');
-            formulario.querySelector('button[type="submit"]').disabled = True;
+            ui.imprimirAlerta('El presupuesto se ha agotado.', 'error');
+            formulario.querySelector('button[type="submit"]').disabled = true;
         }
 
-
-        //Aquí definimos el metodo para limpiar el HTML
-        function limpiarHTML()
-        {
-            while (listadogastos.firstChild)
-            {
-                listadogastos.removeChild(listadogastos.firstChild);
-            }
-        }
-
-        limpiarHTML();
     }
 
     actualizarMayorGasto(cantidad) 
     {
-        if (cantidad > this.highestExpense) 
+        if (cantidad > this.highestExpense)
         {
             this.highestExpense = cantidad;
-            alert(`¡Nuevo mayor gasto detectado! Valor: ${cantidad}`);
+            const div_Higest_Expense = document.createElement('div');
+            div_Higest_Expense.textContent = "Nuevo valor más alto agregado: " + cantidad;
+            div_Higest_Expense.classList.add('alert', 'alert-success');
+            var reference_Node = document.querySelector('#gastos');
+            document.querySelector('.contenido_lista').insertBefore(div_Higest_Expense, reference_Node)
+    
+            // Remove the previous highest expense if it exists
+            const previousHighestExpense = document.querySelector('.highest-expense');
+            if (previousHighestExpense) {
+                previousHighestExpense.remove();
+            }
+            // Set the new highest expense history
+            div_Higest_Expense.classList.add('highest-expense');
         }
     }
 
@@ -228,8 +230,9 @@ function agregarGasto(e)
         const {gastos} = presupuesto;
         ui.agregarGastoAlListado(gastos);
 
+
         ui.comprobarpresupuesto(presupuesto);
-        
+
         const {restante} = presupuesto;
 
         ui.actualizarpresupuesto(restante);
@@ -244,21 +247,37 @@ function agregarGasto(e)
         
 }
 
-
+// function limpiarHTML()
+// {
+//     while (listadogastos.firstChild)
+//     {
+//         listadogastos.removeChild(listadogastos.firstChild);
+//     }
+// }
 
 function eliminarGasto(e)
 {
-    if (e.target.classList.contains('borrar-gasto'))
+    console.log("Si entra a la función. ");
+    if (e.target.classList.contains('borrar_gasto')) 
     {
-        const id = e.target.parentElement.dataset.id;
+        console.log("Si entra al if. ")
+        const id = e.target.parentElement.dataset.id; // Retrieve the id of the gasto to be deleted
         presupuesto.eliminarGasto(id);
 
         ui.agregarGastoAlListado(presupuesto.gastos); // Update the list in the UI after removing an expense
 
         ui.comprobarpresupuesto(presupuesto);
-        const {restante} = presupuesto;
+        const { restante } = presupuesto;
         ui.actualizarpresupuesto(restante);
 
-        e.target.parentElement.remove();
+        ui.comprobarpresupuesto(presupuesto);
+        e.target.parentElement.remove(); // Remove the expense from the UI
+
+        const submitButton = formulario.querySelector('button[type="submit"]');
+        if (presupuesto.gastos.length === 0 && restante > 0) 
+        {
+            submitButton.disabled = false;
+        }
+
     }
 }
