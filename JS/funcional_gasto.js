@@ -46,6 +46,12 @@ class Presupuesto
 
 class UI 
 {
+
+    constructor() 
+    {
+        this.highestExpense = 0;
+    }
+
     insertarPresupuesto(cantidad)
     {
         document.querySelector('#total').textContent = cantidad.presupuesto;
@@ -161,6 +167,15 @@ class UI
         limpiarHTML();
     }
 
+    actualizarMayorGasto(cantidad) 
+    {
+        if (cantidad > this.highestExpense) 
+        {
+            this.highestExpense = cantidad;
+            alert(`¡Nuevo mayor gasto detectado! Valor: ${cantidad}`);
+        }
+    }
+
 }
 
 const ui = new UI();
@@ -218,6 +233,8 @@ function agregarGasto(e)
         const {restante} = presupuesto;
 
         ui.actualizarpresupuesto(restante);
+
+        ui.actualizarMayorGasto(cantidad);
 
         formulario.reset();
 
