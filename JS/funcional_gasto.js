@@ -228,8 +228,10 @@ function agregarGasto(e)
         ui.imprimirAlerta('Gasto valido', 'Correcto')
 
         const {gastos} = presupuesto;
-        ui.agregarGastoAlListado(gastos);
 
+        listadogastos.innerHTML = '';
+
+        ui.agregarGastoAlListado(gastos);
 
         ui.comprobarpresupuesto(presupuesto);
 
@@ -260,18 +262,16 @@ function eliminarGasto(e)
     console.log("Si entra a la función. ");
     if (e.target.classList.contains('borrar_gasto')) 
     {
-        console.log("Si entra al if. ")
-        const id = e.target.parentElement.dataset.id; // Retrieve the id of the gasto to be deleted
+        const id = e.target.parentElement.dataset.id;
         presupuesto.eliminarGasto(id);
 
-        ui.agregarGastoAlListado(presupuesto.gastos); // Update the list in the UI after removing an expense
-
+        ui.agregarGastoAlListado(presupuesto.gastos);
         ui.comprobarpresupuesto(presupuesto);
+
         const { restante } = presupuesto;
         ui.actualizarpresupuesto(restante);
 
-        ui.comprobarpresupuesto(presupuesto);
-        e.target.parentElement.remove(); // Remove the expense from the UI
+        e.target.parentElement.remove(); 
 
         const submitButton = formulario.querySelector('button[type="submit"]');
         if (presupuesto.gastos.length === 0 && restante > 0) 
@@ -279,5 +279,16 @@ function eliminarGasto(e)
             submitButton.disabled = false;
         }
 
+        // Check if all expenses are deleted
+        if (presupuesto.gastos.length === 0) 
+        {
+            // Remove the highest expense message
+            const highestExpenseMessage = document.querySelector('.highest-expense');
+            if (highestExpenseMessage) 
+            {
+                highestExpenseMessage.remove();
+                ui.highestExpense = 0; // Reset highest expense value
+            }
+        }
     }
 }
